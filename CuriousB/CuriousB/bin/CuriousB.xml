@@ -1,0 +1,32 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+CuriousB
+</name>
+</assembly>
+<members>
+<member name="F:CuriousB.System.Web.Mvc.ViewMasterPage.form1">
+	<summary>
+form1 control.
+</summary>
+	<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member><member name="F:CuriousB.System.Web.Mvc.ViewMasterPage.ContentPlaceHolder1">
+	<summary>
+ContentPlaceHolder1 control.
+</summary>
+	<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member><member name="M:CuriousB.AggregateModel.GetDevicesResult(System.String)">
+	<summary>
+	</summary>
+	<param name="query"></param>
+	<remarks></remarks>
+</member>
+</members>
+</doc>

@@ -1,0 +1,13 @@
+D:\Projects\CuriousB\CuriousBLib\bin\Debug\SQL\populate indiv_cluster.sql
+D:\Projects\CuriousB\CuriousBLib\bin\Debug\CuriousBLib.dll
+D:\Projects\CuriousB\CuriousBLib\bin\Debug\CuriousBLib.pdb
+D:\Projects\CuriousB\CuriousBLib\bin\Debug\CuriousBLib.xml
+D:\Projects\CuriousB\CuriousBLib\bin\Debug\MsSQLDatabase.dll
+D:\Projects\CuriousB\CuriousBLib\bin\Debug\MsSQLDatabase.pdb
+D:\Projects\CuriousB\CuriousBLib\bin\Debug\MsSQLDatabase.xml
+D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.vbprojResolveAssemblyReference.cache
+D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.Resources.resources
+D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.vbproj.GenerateResource.Cache
+D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.dll
+D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.xml
+D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.pdb
