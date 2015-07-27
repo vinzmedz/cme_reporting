@@ -1,0 +1,72 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+CMEConnect
+</name>
+</assembly>
+<members>
+<member name="F:CMEConnect.System.Web.Mvc.ViewMasterPage.Head1">
+	<summary>
+Head1 control.
+</summary>
+	<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member><member name="F:CMEConnect.System.Web.Mvc.ViewMasterPage.TitleContent">
+	<summary>
+TitleContent control.
+</summary>
+	<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member><member name="F:CMEConnect.System.Web.Mvc.ViewMasterPage.CSSContent">
+	<summary>
+CSSContent control.
+</summary>
+	<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member><member name="F:CMEConnect.System.Web.Mvc.ViewMasterPage.BreadcrumbContent">
+	<summary>
+BreadcrumbContent control.
+</summary>
+	<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member><member name="F:CMEConnect.System.Web.Mvc.ViewMasterPage.MainContent">
+	<summary>
+MainContent control.
+</summary>
+	<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member><member name="F:CMEConnect.System.Web.Mvc.ViewMasterPage.FooterContent">
+	<summary>
+FooterContent control.
+</summary>
+	<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member><member name="F:CMEConnect.System.Web.Mvc.ViewMasterPage.ScriptsSection">
+	<summary>
+ScriptsSection control.
+</summary>
+	<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member><member name="M:CMEConnect.AggregateModel.GetDevicesResult(System.String)">
+	<summary>
+	</summary>
+	<param name="query"></param>
+	<remarks></remarks>
+</member>
+</members>
+</doc>

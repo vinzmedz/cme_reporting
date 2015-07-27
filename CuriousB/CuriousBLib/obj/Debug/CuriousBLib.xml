@@ -11,16 +11,35 @@ CuriousBLib
  Constructor for class called when NEW instance created
  </summary>
 	<remarks></remarks>
-</member><member name="M:CuriousBLib.EngagementLib.GetEngagementHistory">
+</member><member name="M:CuriousBLib.EngagementLib.GetLatestCommunication">
 	<summary>
- Reset contents of member variables
- </summary>
+	</summary>
+	<returns></returns>
 	<remarks></remarks>
-</member><member name="M:CuriousBLib.EngagementLib.DataReaderToMemberVariables(System.Collections.Generic.Dictionary{System.String,System.Object}@)">
+</member><member name="M:CuriousBLib.EngagementLib.GetCommunicationSummary(System.String)">
+	<summary>
+ "rpt.sp_GetEventsSummary"
+ </summary>
+	<param name="query"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:CuriousBLib.EngagementLib.GetEngagementOverTime(System.String)">
+	<summary>
+ This procedure accepts 2 types of engagement over time report
+ 1. weekly report
+ 2. rows by weeks, months and quarter
+ but only returns the same column result
+ </summary>
+	<param name="query">a stored procedure for that returns Engagement Over Time table</param>
+	<returns>
+ WeekRange, Dormant, Low, Medium, High, TotalCount
+ </returns>
+	<remarks></remarks>
+</member><member name="M:CuriousBLib.EngagementLib.GetField(System.String@)">
 	<summary>
  Retrieve data from a database row into the member variables of the class
  </summary>
-	<param name="oDR"></param>
+	<param name="query"></param>
 	<remarks></remarks>
 </member><member name="M:CuriousBLib.CuriousBLib.GetConnectionString(System.String)">
 	<summary>

@@ -2,19 +2,12 @@
 Imports System.Data.SqlClient
 Imports MsSQLDatabase
 
-Public Class EngagementLib
+Public Class EngagementLib : Implements IDisposable
+
 
     Protected _ListResult As List(Of Dictionary(Of String, Object))
 
 #Region "Get and Set Definitions"
-    Public Property ListResult() As List(Of Dictionary(Of String, Object))
-        Get
-            Return _ListResult
-        End Get
-        Set(ByVal value As List(Of Dictionary(Of String, Object)))
-            _ListResult = value
-        End Set
-    End Property
 
     Public ReadOnly Property HasError As Boolean
         Get
@@ -28,39 +21,28 @@ Public Class EngagementLib
         End Get
     End Property
 
-    Public ReadOnly Property StartDate As String
+    Public Property CommLog As Guid
         Get
-            Return _startDate
+            Return _commLog
         End Get
+        Set(value As Guid)
+            _commLog = value
+        End Set
     End Property
 
-    Public ReadOnly Property EndDate As String
-        Get
-            Return _endDate
-        End Get
-    End Property
-
-    Public ReadOnly Property CommName As String
-        Get
-            Return _commName
-        End Get
-    End Property
-
-    Public ReadOnly Property DeployDate As DateTime
-        Get
-            Return _deployDate
-        End Get
-    End Property
 #End Region
 
-    Protected _strConn As String = ""
-    Protected _hasError As Boolean = False
+    Private _dbConn As New MsSQLDatabase.MsSQLClass
+    Private _strConn As String = ""
 
+    Protected _hasError As Boolean = False
     Protected _errMsg As String = ""
-    Protected _startDate As String
-    Protected _endDate As String
+
+    Protected _emailEngagements As New List(Of Dictionary(Of String, Object))
+
     Protected _deployDate As DateTime
     Protected _commName As String
+    Protected _commLog As Guid
 
     ''' <summary>
     ''' Constructor for class called when NEW instance created
@@ -69,12 +51,83 @@ Public Class EngagementLib
     Public Sub New()
         _strConn = CuriousBLib.GetConnectionString("SQLConn2")
 
+        _dbConn = New MsSQLDatabase.MsSQLClass()
+        _dbConn.dbOpen(_strConn)
+
     End Sub
-    Public Function GetEmailContent(ByVal connlog As Guid) As String
-        Dim msql As String = "SELECT "
-        Return ""
+
+
+#Region "Engagement Report Methods and Functions"
+
+    Public Function GetEmailContent(ByVal commlog As String) As String
+
+        Dim msql As String = String.Format("SELECT TOP 1 FullHTML FROM CME_CommInst WHERE CME_CommLog='{0}' AND FullHTML IS NOT NULL", commlog)
+        Dim emailContent As String = ""
+
+        emailContent = GetField(msql)
+
+        If emailContent = Nothing Then
+            Return "No Preview"
+        Else
+            Return emailContent
+        End If
+
     End Function
 
+    Public Function GetEngagementOverTimeDesc() As String
+        Dim msql As String = "rpt.sp_EngagementOverTime_Desc"
+        Dim mstr As String = ""
+
+        _hasError = False
+        With _dbConn
+            .dbOpen(_strConn)
+
+            If .IsConnected Then
+                .Query = "rpt.sp_EngagementOverTime_Desc"
+                .SQLType = MsSQLDatabase.MsSQLClass.QueryType.STORED_QUERY
+                .MyCmd.CommandType = CommandType.StoredProcedure
+                .MyCmd.Parameters.Clear()
+
+                If .ExecuteQuery Then
+                    With .MyRdr
+                        If .HasRows Then
+
+                            'WeekRange, Dormant, Low, Medium, High, TotalCount, Seq
+                            .Read()
+
+                            mstr = .GetValue(0)
+
+                            .Close()    'Close datareader
+                        Else
+                            _hasError = True
+                            _errMsg = "Empty result."
+
+                        End If
+                    End With
+                Else
+                    _hasError = True
+                    _errMsg = .ErrorMsg
+                End If
+            Else
+                _hasError = True
+                _errMsg = .ErrorMsg
+            End If
+        End With
+
+        If _hasError Then
+            Return Nothing
+        Else
+            Return mstr
+        End If
+
+
+    End Function
+
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
     Public Function GetLatestCommunication() As Guid
         Dim mSQL As String
         mSQL = "rpt.sp_GetLatestCommLog"
@@ -111,39 +164,59 @@ Public Class EngagementLib
         End With
     End Function
 
-    Public Sub GetLatestDate()
-        Dim mSQL As String
+    ''' <summary>
+    ''' "rpt.sp_GetEventsSummary"
+    ''' </summary>
+    ''' <param name="query"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function GetCommunicationSummary(ByVal query As String) As Dictionary(Of String, Object)
+        Dim latestDeployed As New Dictionary(Of String, Object)
 
-        mSQL = "SELECT TOP 1 CAST(Engagement_date AS date), CAST(GETDATE() AS date) " & _
-               "FROM [EngagementHistory] " & _
-               "ORDER BY Engagement_date ASC"
-
-        Dim dbConn As New MsSQLClass(mSQL)
-        With dbConn
-            .dbOpen(_strConn)
+        With _dbConn
             If .IsConnected Then
-                .Query = mSQL
-                .SQLType = MsSQLDatabase.MsSQLClass.QueryType.SELECT_QUERY
+                .Query = query
+                .SQLType = MsSQLDatabase.MsSQLClass.QueryType.STORED_QUERY
+                .MyCmd.CommandType = CommandType.StoredProcedure
+                .MyCmd.Parameters.Clear()
+
                 If .ExecuteQuery Then
                     With .MyRdr
                         If .HasRows Then
-                            Dim sDate As DateTime
-                            Dim eDate As DateTime
                             While .Read
-                                sDate = .GetValue(0)
-                                eDate = .GetValue(1)
+                                '0 CommLog
+                                '1 TotalDeployed
+                                '2 PctOpened
+                                '3 PctClicked
+                                '4 TotOpened
+                                '5 TotClicked
+                                '6 CommName
+                                '7 OpenedRank
+                                '8 ClickedRank
+
+                                latestDeployed.Add("Deployed", .GetValue(1))
+                                latestDeployed.Add("Opened", .GetValue(2))
+                                latestDeployed.Add("Clicked", .GetValue(3))
+                                latestDeployed.Add("TotalOpened", .GetValue(4))
+                                latestDeployed.Add("TotalClicked", .GetValue(5))
+                                latestDeployed.Add("CommLogName", .GetValue(6))
+                                latestDeployed.Add("PrevOpened", .GetValue(7))
+                                latestDeployed.Add("PrevClicked", .GetValue(8))
+                                latestDeployed.Add("OpenRank", .GetValue(9))
+                                latestDeployed.Add("ClickRank", .GetValue(10))
+                                latestDeployed.Add("ExpectedOpenRate", .GetValue(11))
+                                latestDeployed.Add("DeployDate", .GetValue(12))
+                                latestDeployed.Add("EmailPreview", .GetValue(13))
                             End While
-
-                            _startDate = Format(sDate, "yyyy-MM-dd 00:00:00")
-                            _endDate = Format(eDate, "yyyy-MM-dd 23:59:59")
-
-                            '_startDate = sDate & " 00:00:00"
-                            '_startDate = "05/01/2015 00:00:00"
-                            '_endDate = "06/19/2015 23:59:59"
-                            '_endDate = eDate & " 23:59:59"
+                        Else
+                            _hasError = True
+                            _errMsg = "Empty result."
                         End If
                         .Close()
                     End With
+                Else
+                    _hasError = True
+                    _errMsg = .ErrorMsg
                 End If
             Else
                 _hasError = True
@@ -151,57 +224,185 @@ Public Class EngagementLib
             End If
         End With
 
-    End Sub
-
-    ''' <summary>
-    ''' Reset contents of member variables
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Sub GetEngagementHistory()
-        Dim mSQL As String = "SELECT * " & _
-                             "FROM EngagementHistory"
-
-        Dim dbConn As New MsSQLClass(mSQL)
-
-        dbConn.dbOpen(_strConn)
-        dbConn.SQLType = MsSQLClass.QueryType.SELECT_QUERY
-
-        dbConn.ExecuteQuery()
-        If dbConn.MyRdr.HasRows Then
-            Dim _ListResult As New List(Of Dictionary(Of String, Object))
-
-            While dbConn.MyRdr.Read
-                Dim dict As New Dictionary(Of String, Object)
-                For count As Integer = 0 To (dbConn.MyRdr.FieldCount - 1)
-                    If Not dict.ContainsKey(dbConn.MyRdr.GetName(count)) Then
-                        dict.Add(dbConn.MyRdr.GetName(count), dbConn.MyRdr(count))
-                    End If
-                Next
-                'dict.Add('band', )
-                _ListResult.Add(dict)
-
-            End While
-
+        If _hasError Then
+            Return Nothing
+        Else
+            Return latestDeployed
         End If
 
-    End Sub
+    End Function
 
+    ''' <summary>
+    ''' This procedure accepts 2 types of engagement over time report
+    ''' 1. weekly report
+    ''' 2. rows by weeks, months and quarter
+    ''' but only returns the same column result
+    ''' </summary>
+    ''' <param name="query">a stored procedure for that returns Engagement Over Time table</param>
+    ''' <returns>
+    ''' WeekRange, Dormant, Low, Medium, High, TotalCount
+    ''' </returns>
+    ''' <remarks></remarks>
+    Public Function GetEngagementOverTime(ByVal query As String) As List(Of Dictionary(Of String, Object))
+        Dim _EngagementList As New List(Of Dictionary(Of String, Object))
+
+        _hasError = False
+
+        With _dbConn
+            .dbOpen(_strConn)
+
+            If .IsConnected Then
+                .Query = query
+                .SQLType = MsSQLDatabase.MsSQLClass.QueryType.STORED_QUERY
+                .MyCmd.CommandType = CommandType.StoredProcedure
+                .MyCmd.Parameters.Clear()
+
+                If .ExecuteQuery Then
+                    With .MyRdr
+                        If .HasRows Then
+
+                            'WeekRange, Dormant, Low, Medium, High, TotalCount, Seq
+                            While .Read
+                                Dim dict As New Dictionary(Of String, Object)
+                                Dim hi, mi, lo, tot As Int64
+
+                                lo = .GetValue(2)
+                                mi = .GetValue(3)
+                                hi = .GetValue(4)
+                                tot = .GetValue(5)
+
+                                dict.Add("WeekNo", .GetValue(0))
+                                dict.Add("WeekRange", .GetValue(0))
+                                dict.Add("Low", Math.Round(lo / tot * 100))
+                                dict.Add("Medium", Math.Round(mi / tot * 100))
+                                dict.Add("High", Math.Round(hi / tot * 100))
+                                dict.Add("TotalCount", tot)
+                                dict.Add("TotalLow", lo)
+                                dict.Add("TotalMedium", mi)
+                                dict.Add("TotalHigh", hi)
+                                dict.Add("Dormant", .GetValue(1))
+                                dict.Add("Seq", .GetValue(6))
+
+                                _EngagementList.Add(dict)
+                            End While
+
+                            .Close()    'Close datareader
+                        Else
+
+                            _hasError = True
+                            _errMsg = "Empty result."
+
+                        End If
+
+                    End With
+                Else
+
+                    _hasError = True
+                    _errMsg = .ErrorMsg
+
+                End If
+
+            Else
+                _hasError = True
+                _errMsg = .ErrorMsg
+            End If
+
+        End With
+
+        If _hasError Then
+            Return Nothing
+        Else
+            Return _EngagementList
+        End If
+
+    End Function
+
+
+
+#End Region
+
+#Region "Private Functions"
 
     ''' <summary>
     ''' Retrieve data from a database row into the member variables of the class
     ''' </summary>
-    ''' <param name="oDR"></param>
+    ''' <param name="query"></param>
     ''' <remarks></remarks>
-    Public Sub DataReaderToMemberVariables(ByRef oDR As Dictionary(Of String, Object))
+    Private Function GetField(ByRef query As String) As Object
+        Dim returnValue As Object = Nothing
 
+        _hasError = False
+
+        With _dbConn
+            If .IsConnected Then
+                .Query = query
+                .SQLType = MsSQLDatabase.MsSQLClass.QueryType.SELECT_QUERY
+                If .ExecuteQuery Then
+                    With .MyRdr
+                        If .HasRows Then
+                            .Read()
+                            returnValue = .GetValue(0)
+                        Else
+                            _hasError = True
+                        End If
+                        .Close()
+                    End With
+                Else
+                    _hasError = True
+                    _errMsg = .ErrorMsg
+                End If
+            Else
+                _hasError = True
+                _errMsg = .ErrorMsg
+            End If
+        End With
+
+        If _hasError Then
+            Return Nothing
+        Else
+            Return returnValue
+        End If
+
+    End Function
+
+#End Region
+
+#Region "IDisposable Support"
+    Private disposedValue As Boolean ' To detect redundant calls
+
+    ' IDisposable
+    Protected Overridable Sub Dispose(disposing As Boolean)
+        If Not Me.disposedValue Then
+            If disposing Then
+                ' TODO: dispose managed state (managed objects).
+            End If
+
+            ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+            ' TODO: set large fields to null.
+
+            If _dbConn.IsConnected Then
+                _dbConn.dbClose()
+            End If
+
+            _dbConn = Nothing
+
+        End If
+        Me.disposedValue = True
     End Sub
-End Class
 
-Public Class Engagements
-    Public Seq As Integer
-    Public Edm As String
-    Public Deployed As Integer
-    Public Opened As Integer
-    Public Clicked As Integer
-    Public EngagementScore As Double
+    ' TODO: override Finalize() only if Dispose(ByVal disposing As Boolean) above has code to free unmanaged resources.
+    'Protected Overrides Sub Finalize()
+    '    ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.
+    '    Dispose(False)
+    '    MyBase.Finalize()
+    'End Sub
+
+    ' This code added by Visual Basic to correctly implement the disposable pattern.
+    Public Sub Dispose() Implements IDisposable.Dispose
+        ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+        Dispose(True)
+        GC.SuppressFinalize(Me)
+    End Sub
+#End Region
+
 End Class

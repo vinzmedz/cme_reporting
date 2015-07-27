@@ -11,3 +11,16 @@ D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.vbproj.GenerateResource.C
 D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.dll
 D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.xml
 D:\Projects\CuriousB\CuriousBLib\obj\Debug\CuriousBLib.pdb
+D:\Projects\CMEConnect\CuriousBLib\bin\Debug\SQL\populate indiv_cluster.sql
+D:\Projects\CMEConnect\CuriousBLib\bin\Debug\CuriousBLib.dll
+D:\Projects\CMEConnect\CuriousBLib\bin\Debug\CuriousBLib.pdb
+D:\Projects\CMEConnect\CuriousBLib\bin\Debug\CuriousBLib.xml
+D:\Projects\CMEConnect\CuriousBLib\bin\Debug\MsSQLDatabase.dll
+D:\Projects\CMEConnect\CuriousBLib\bin\Debug\MsSQLDatabase.pdb
+D:\Projects\CMEConnect\CuriousBLib\bin\Debug\MsSQLDatabase.xml
+D:\Projects\CMEConnect\CuriousBLib\obj\Debug\CuriousBLib.Resources.resources
+D:\Projects\CMEConnect\CuriousBLib\obj\Debug\CuriousBLib.vbproj.GenerateResource.Cache
+D:\Projects\CMEConnect\CuriousBLib\obj\Debug\CuriousBLib.dll
+D:\Projects\CMEConnect\CuriousBLib\obj\Debug\CuriousBLib.xml
+D:\Projects\CMEConnect\CuriousBLib\obj\Debug\CuriousBLib.pdb
+D:\Projects\CMEConnect\CuriousBLib\obj\Debug\CuriousBLib.vbprojResolveAssemblyReference.cache
