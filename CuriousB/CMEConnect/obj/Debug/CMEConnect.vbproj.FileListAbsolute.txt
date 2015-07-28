@@ -1,7 +1,10 @@
+D:\Projects\CMEConnect\CMEConnect\bin\SQL\populate indiv_cluster.sql
 D:\Projects\CMEConnect\CMEConnect\bin\CMEConnect.dll
 D:\Projects\CMEConnect\CMEConnect\bin\CMEConnect.pdb
 D:\Projects\CMEConnect\CMEConnect\bin\CMEConnect.xml
+D:\Projects\CMEConnect\CMEConnect\bin\CuriousBLib.dll
 D:\Projects\CMEConnect\CMEConnect\bin\Microsoft.Web.Infrastructure.dll
+D:\Projects\CMEConnect\CMEConnect\bin\MsSQLDatabase.dll
 D:\Projects\CMEConnect\CMEConnect\bin\Newtonsoft.Json.dll
 D:\Projects\CMEConnect\CMEConnect\bin\System.Web.Helpers.dll
 D:\Projects\CMEConnect\CMEConnect\bin\System.Web.Mvc.dll
@@ -9,6 +12,10 @@ D:\Projects\CMEConnect\CMEConnect\bin\System.Web.Razor.dll
 D:\Projects\CMEConnect\CMEConnect\bin\System.Web.WebPages.Deployment.dll
 D:\Projects\CMEConnect\CMEConnect\bin\System.Web.WebPages.dll
 D:\Projects\CMEConnect\CMEConnect\bin\System.Web.WebPages.Razor.dll
+D:\Projects\CMEConnect\CMEConnect\bin\MsSQLDatabase.pdb
+D:\Projects\CMEConnect\CMEConnect\bin\MsSQLDatabase.xml
+D:\Projects\CMEConnect\CMEConnect\bin\CuriousBLib.pdb
+D:\Projects\CMEConnect\CMEConnect\bin\CuriousBLib.xml
 D:\Projects\CMEConnect\CMEConnect\bin\Newtonsoft.Json.xml
 D:\Projects\CMEConnect\CMEConnect\bin\System.Web.Helpers.xml
 D:\Projects\CMEConnect\CMEConnect\bin\System.Web.Mvc.xml
@@ -20,10 +27,3 @@ D:\Projects\CMEConnect\CMEConnect\obj\Debug\CMEConnect.vbprojResolveAssemblyRefe
 D:\Projects\CMEConnect\CMEConnect\obj\Debug\CMEConnect.dll
 D:\Projects\CMEConnect\CMEConnect\obj\Debug\CMEConnect.xml
 D:\Projects\CMEConnect\CMEConnect\obj\Debug\CMEConnect.pdb
-D:\Projects\CMEConnect\CMEConnect\bin\SQL\populate indiv_cluster.sql
-D:\Projects\CMEConnect\CMEConnect\bin\CuriousBLib.dll
-D:\Projects\CMEConnect\CMEConnect\bin\MsSQLDatabase.dll
-D:\Projects\CMEConnect\CMEConnect\bin\MsSQLDatabase.pdb
-D:\Projects\CMEConnect\CMEConnect\bin\MsSQLDatabase.xml
-D:\Projects\CMEConnect\CMEConnect\bin\CuriousBLib.pdb
-D:\Projects\CMEConnect\CMEConnect\bin\CuriousBLib.xml

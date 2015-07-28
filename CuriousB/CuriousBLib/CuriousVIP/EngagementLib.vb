@@ -59,6 +59,67 @@ Public Class EngagementLib : Implements IDisposable
 
 #Region "Engagement Report Methods and Functions"
 
+    Public Function GetLatestDeployments() As List(Of Dictionary(Of String, Object))
+        Dim _LatestDeployements As New List(Of Dictionary(Of String, Object))
+        Dim mSQL As String = "[rpt].[sp_LatestDeployment]"
+
+        _hasError = False
+        With _dbConn
+            If .IsConnected Then
+                .Query = mSQL
+                .SQLType = MsSQLDatabase.MsSQLClass.QueryType.STORED_QUERY
+                .MyCmd.CommandType = CommandType.StoredProcedure
+
+                If .ExecuteQuery Then
+                    With .MyRdr
+                        If .HasRows Then
+                            Dim LatestDeploymentsList As New List(Of Dictionary(Of String, Object))
+                            Dim _Result = New ArrayList
+                            '--Name, DateDeployed, Deployed, Opened, Clicked, Total
+                            'Name	DateDeployed	deployed	opened	clicked	Rank	expectedOpenRate
+                            While .Read
+                                Dim dict As New Dictionary(Of String, Object)
+                                Dim dep As Integer = .GetValue(2)
+                                Dim opn As Integer = .GetValue(3)
+                                Dim clk As Integer = .GetValue(4)
+
+
+
+                                dict.Add("DateDeployed", .GetValue(1))
+                                dict.Add("Name", .GetValue(0).ToString)
+                                dict.Add("Deployed", dep)
+                                dict.Add("Opened", opn)
+                                dict.Add("Clicked", clk)
+                                dict.Add("Rank", .GetValue(5))
+                                dict.Add("ExpOpen", .GetValue(6))
+                                LatestDeploymentsList.Add(dict)
+                            End While
+                            _LatestDeployements = LatestDeploymentsList
+                        Else
+                            _hasError = True
+                            _errMsg = "Empty result."
+                        End If
+                        .Close()
+                    End With
+                Else
+                    _hasError = True
+                    _errMsg = .ErrorMsg
+                End If
+
+            Else
+                _hasError = True
+                _errMsg = .ErrorMsg
+            End If
+
+        End With
+
+        If _hasError Then
+            Return Nothing
+        Else
+            Return _LatestDeployements
+        End If
+    End Function
+
     Public Function GetEmailContent(ByVal commlog As String) As String
 
         Dim msql As String = String.Format("SELECT TOP 1 FullHTML FROM CME_CommInst WHERE CME_CommLog='{0}' AND FullHTML IS NOT NULL", commlog)
@@ -96,13 +157,12 @@ Public Class EngagementLib : Implements IDisposable
                             .Read()
 
                             mstr = .GetValue(0)
-
-                            .Close()    'Close datareader
                         Else
                             _hasError = True
                             _errMsg = "Empty result."
-
                         End If
+
+                        .Close()    'Close datareader
                     End With
                 Else
                     _hasError = True
@@ -207,6 +267,7 @@ Public Class EngagementLib : Implements IDisposable
                                 latestDeployed.Add("ExpectedOpenRate", .GetValue(11))
                                 latestDeployed.Add("DeployDate", .GetValue(12))
                                 latestDeployed.Add("EmailPreview", .GetValue(13))
+                                'latestDeployed.Add("DateText", GenerateDateDeployText(.GetValue(12)))
                             End While
                         Else
                             _hasError = True
@@ -322,6 +383,17 @@ Public Class EngagementLib : Implements IDisposable
 #End Region
 
 #Region "Private Functions"
+
+    Private Function GenerateDateDeployText(ByVal _datedeploy As String) As String
+        'Dim nDate As Date = DateTime.ParseExact(_datedeploy, "mm/dd/yyyy", System.Globalization.DateTimeFormatInfo.InvariantInfo)
+        Dim dateNow As Date = Date.Now
+
+
+        'Return nDate & "<br>" & dateNow
+        Return ""
+        'Get number of years 
+
+    End Function
 
     ''' <summary>
     ''' Retrieve data from a database row into the member variables of the class

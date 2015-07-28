@@ -20,7 +20,7 @@
                 <li><a href="<%= Url.Content("~/Engagement/Index")%>"><span class="glyphicon glyphicon-list"></span> Email Engagement</a></li>
                 <li><a href="<%= Url.Content("~/Engagement/ICluster")%>"><span class="glyphicon glyphicon-list"></span> Initial Clustering</a></li>
                 <li><a href="<%= Url.Content("~/Engagement/Aggregate")%>"><span class="glyphicon glyphicon-list"></span> Aggregate Reports</a></li>
-                <li><a href="<%= Url.Content("~/Engagement/LatestDeployment")%>"><span class="glyphicon glyphicon-list"></span> Latest Deployment</a></li>
+                <%--<li><a href="<%= Url.Content("~/Engagement/LatestDeployment")%>"><span class="glyphicon glyphicon-list"></span> Latest Deployment</a></li>--%>
             </ul>
         </li>
 	</ul>

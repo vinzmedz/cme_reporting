@@ -925,11 +925,11 @@ table.jqplot-highlighter {
         padding: 2px;
     }
     table.jqplot-highlighter .jqplot-highlighter-title {
-        background-color:#30a5ff;
+        /*background-color:#30a5ff;*/
     }
 
     table.jqplot-highlighter .jqplot-highlighter-body {
-        background-color:#fff;
+        /*background-color:#fff;*/
     }
 
 .jqplot-xaxis-tick div {

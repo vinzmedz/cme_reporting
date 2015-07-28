@@ -19,6 +19,59 @@
 	</div><!--/.row-->
 
     <div class="row">
+		<div class="col-lg-12">
+            <div class="panel panel-blue">
+                <div class="panel-heading" title="Latest Deployements">Latest Deployements</div>
+                <div class="panel-body">
+                    <div class="engagement-chart">
+					    <div id="barClicks" style="width: 100%; height: 500px;"></div>
+                        <%
+                            Dim comma As String = ""
+                            Dim cnt As Integer = 1
+
+                            Dim dataDep As String = ""
+                            Dim dataOpn As String = ""
+                            Dim dataClk As String = ""
+                            Dim dataCTicks As String = ""
+                            Dim label As String = ""
+                            comma = ""
+                            
+                            'Name, DateDeployed, Deployed, Opened, Clicked, Rank
+                            For Each rowClicks In Model.LatestDeployements
+                                If cnt > 1 Then
+                                    comma = ","
+                                End If
+
+                                dataDep = dataDep & comma & rowClicks("Deployed")
+                                dataOpn = dataOpn & comma & rowClicks("Opened")
+                                dataClk = dataClk & comma & rowClicks("Clicked")
+                                
+                                label = ""
+                                If rowClicks("Rank") = "High" Then
+                                    label = "'<div id=""tt_" & cnt & """ class=""chart-series""><span class=""rank-hi rank-margin glyphicon glyphicon-circle-arrow-up""></span>" & rowClicks("Name") & "</div>Deploy Date:" & rowClicks("DateDeployed") & "'"
+                                ElseIf rowClicks("Rank") = "Medium" Then
+                                    label = "'<div id=""tt_" & cnt & """ class=""chart-series""><span class=""rank-mid rank-margin glyphicon glyphicon-circle-arrow-right""></span>" & rowClicks("Name") & "</div>Deploy Date:" & rowClicks("DateDeployed") & "'"
+                                Else
+                                    label = "'<div id=""tt_" & cnt & """ class=""chart-series""><span class=""rank-low rank-margin glyphicon glyphicon-circle-arrow-down""></span>" & rowClicks("Name") & "</div>Deploy Date:" & rowClicks("DateDeployed") & "'"
+                                End If
+                                dataCTicks = dataCTicks & comma & label
+            
+                                cnt = cnt + 1
+                            Next
+                        %>
+                        <script type="text/javascript">
+                            var c1 = [<%=dataDep%>];
+                            var c2 = [<%=dataOpn%>];
+                            var c3 = [<%=dataClk%>];
+                            var chartCTicks = [<%=dataCTicks%>];
+                        </script>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-blue">
                 <div class="panel-heading"><span title="Taken from stored procedure sp_EngagementOverTime.">Engagement Over Time</span>
@@ -35,10 +88,9 @@
                         <p>
                             The calculation behind this is quite complicated but the result is a measure of not just how many people are on the database, but how engaged each of them is.
                         </p>
+                        <div><span>Events: </span><span id="info1">Nothing yet</span></div>
 					    <div id="barChart" style="width: 100%; height: 300px;"></div>
-
                         <%
-                            Dim cnt As Integer = 1
                             Dim dataLow As String = ""
                             Dim dataMid As String = ""
                             Dim dataHi As String = ""
@@ -46,24 +98,28 @@
                             Dim countMid As String = ""
                             Dim countHi As String = ""
                             Dim dataTicks As String = ""
-                            Dim comma As String = ""
-        
-                            For Each rowList In Model.EmailEngagements
-                                If cnt > 1 Then
-                                    comma = ","
-                                End If
+                            If Not IsNothing(Model.EmailEngagements) Then
 
-                                dataLow = dataLow & comma & rowList("Low")
-                                dataMid = dataMid & comma & rowList("Medium")
-                                dataHi = dataHi & comma & rowList("High")
-                                countLow = countLow & comma & rowList("TotalLow")
-                                countMid = countMid & comma & rowList("TotalMedium")
-                                countHi = countHi & comma & rowList("TotalHigh")
+                                cnt = 1
+                                comma = ""
+        
+                                For Each rowList In Model.EmailEngagements
+                                    If cnt > 1 Then
+                                        comma = ","
+                                    End If
+
+                                    dataLow = dataLow & comma & rowList("Low")
+                                    dataMid = dataMid & comma & rowList("Medium")
+                                    dataHi = dataHi & comma & rowList("High")
+                                    countLow = countLow & comma & rowList("TotalLow")
+                                    countMid = countMid & comma & rowList("TotalMedium")
+                                    countHi = countHi & comma & rowList("TotalHigh")
             
-                                dataTicks = dataTicks & comma & "'" & rowList("WeekRange") & "'"
+                                    dataTicks = dataTicks & comma & "'" & rowList("WeekRange") & "'"
             
-                                cnt = cnt + 1
-                            Next
+                                    cnt = cnt + 1
+                                Next
+                            End If
                         %>
                         <script type="text/javascript">
                             var s1 = [<%=dataLow%>]
@@ -82,49 +138,6 @@
         </div>
     </div>
 
-    <div id="EngagementOverTime" class="row" style="display:none">
-        <div class="col-lg-12">
-            <div class="panel panel-blue">
-                <div class="panel-heading"><span title="Taken from stored procedure sp_EngagementOverTime.">Engagement Over Time (Table View)</span></div>
-                <div class="panel-body">
-                    <div class="engagement-chart">
-					    <table data-toggle="table" data-height="300" data-sort-name="WeekRange" data-sort-order="asc">
-						    <thead>
-						    <tr>
-						        <th data-field="WeekRange" data-align="left" data-sortable="true" data-sorter="dateLabelSorter">Week Range</th>
-						        <th data-field="Dormant" data-align="center" data-sortable="true" data-formatter="numberFormatter" data-sorter="vinzSorter">Dormant</th>
-						        <th data-field="Low" data-align="center" data-sortable="true" data-sorter="percentSorter">Low</th>
-						        <th data-field="Medium" data-align="center" data-sortable="true" data-sorter="percentSorter">Medium</th>
-						        <th data-field="High" data-align="center" data-sortable="true" data-sorter="percentSorter">High</th>
-                                <th data-field="Total" data-align="center" data-sortable="true" data-sorter="vinzSorter">Total</th>
-						    </tr>
-						    </thead>
-                            <tbody>
-                                <%  
-                                    cnt = 1
-                                    For Each ecList In Model.EmailEngagements
-                                %>
-                                <tr>
-                                    <td><span style="display:none"><% Response.Write(ecList("Seq") & ". ") %></span>
-                                        <%=ecList("WeekRange")%>
-                                    </td>
-                                    <td><%=String.Format(CultureInfo.InvariantCulture, "{0:0,0}", ecList("Dormant"))%></td>
-                                    <td><%=String.Format(CultureInfo.InvariantCulture, "{0:0}%", ecList("Low"))%></td>
-                                    <td><%=String.Format(CultureInfo.InvariantCulture, "{0:0}%", ecList("Medium"))%></td>
-                                    <td><%=String.Format(CultureInfo.InvariantCulture, "{0:0}%", ecList("High"))%></td>
-                                    <td><%=String.Format(CultureInfo.InvariantCulture, "{0:0,0}", ecList("TotalCount"))%></td>
-                                </tr>
-                                <% 
-                                    cnt = cnt + 1
-                                Next%>
-                            </tbody>
-					    </table>
-                    </div>
-                </div>
-            </div> 
-        </div> 
-    </div> 
-
 </asp:Content>
 
 <asp:Content ID="HiddenCSSContent" ContentPlaceHolderID="CSSContent" runat="server">
@@ -133,7 +146,11 @@
     <link href="<%= Url.Content("~/Content/jquery.jqplot.min.css") %>" rel="stylesheet">
     <link href="<%= Url.Content("~/Content/styles.css") %>" rel="stylesheet">
 
-    <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<%= Url.Content("~/Scripts/excanvas.js")%>"></script><![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="<%= Url.Content("~/Scripts/html5shiv.js")%>"></script>
+        <script src="<%= Url.Content("~/Scripts/respond.min.js")%>"></script>
+    <![endif]-->
 </asp:Content>
 
 <asp:Content ID="HiddenBreadcrumbContent" ContentPlaceHolderID="BreadcrumbContent" runat="server">
@@ -164,20 +181,65 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $.jqplot.sprintf.thousandsSeparator = ',';
+            $.jqplot.numFormatter = function (format, val) {
+                if (!format) {
+                    format = '%.1f';
+                }
+                return numberWithCommas($.jqplot.sprintf(format, val));
+            };
 
             var seriesL = [
                     { label: 'Low' },
                     { label: 'Medium' },
                     { label: 'Hi' }
             ];
+            var xAxisL = {
+                xaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: chartTicks,
+                    tickOptions: {
+                        angle: -45
+                    }
+                },
+                yaxis: {
+                    min: 0,
+                    max: 100,
+                    tickOptions: {
+                        formatString: '%d\%',
+                        formatter: $.jqplot.numFormatter
+                    }
+                }
+            };
 
-            plotStackedBarChart('barChart', s1, s2, s3, chartTicks, seriesL, '%d\%');
+            var seriesC = [
+                   { label: 'Deployed' },
+                   { label: 'Opened' },
+                   { label: 'Click' }
+            ];
+            var xAxisC = {
+                xaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: chartCTicks
+                },
+                yaxis: {
+                    min: 0,
+                    tickOptions: { formatString: '%d', formatter: $.jqplot.numFormatter }
+                }
+            };
+
+            plotStackedBarChart('barClicks', [c1, c2, c3], seriesC, false, xAxisC, false);
+            plotStackedBarChart('barChart', [s1, s2, s3], seriesL, true, xAxisL, true);
+
+            $('[id^="tt_"]').click(function () {
+                event.preventDefault();
+
+                var pid = $(this).attr('id').substring(3);
+                alert("tt_" + pid);
+            });
 
         });
 
         $(window).on('resize', function () {
-            $('#areaChart').html('');
             $('#barChart').html('');
             $('#barClicks').html('');
 
@@ -186,59 +248,91 @@
                     { label: 'Medium' },
                     { label: 'Hi' }
             ];
+            var xAxisL = {
+                xaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: chartTicks,
+                    tickOptions: {
+                        angle: -45
+                    }
+                },
+                yaxis: {
+                    min: 0,
+                    max: 100,
+                    tickOptions: {
+                        formatString: '%d\%',
+                        formatter: $.jqplot.numFormatter
+                    }
+                }
+            };
 
-            plotStackedBarChart('barChart', s1, s2, s3, chartTicks, seriesL, '%d\%', temp);
+            var seriesC = [
+                   { label: 'Deployed' },
+                   { label: 'Opened' },
+                   { label: 'Click' }
+            ];
+            var xAxisC = {
+                xaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: chartCTicks
+                },
+                yaxis: {
+                    min: 0,
+                    tickOptions: { formatString: '%d', formatter: $.jqplot.numFormatter }
+                }
+            };
+
+
+            plotStackedBarChart('barChart', [s1, s2, s3], seriesL, true, xAxisL, true);
+            plotStackedBarChart('barClicks', [c1, c2, c3], seriesC, false, xAxisC, false);
 
             if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
             if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
         })
 
-        function plotStackedBarChart(cont, s1, s2, s3, ticks, seriesLabels, tickString) {
-            var plotc = $.jqplot(cont, [s1, s2, s3], {
-                stackSeries: true,
+        function plotStackedBarChart(cont, data, seriesLabels, isStack, xTickOptions, hlighter) {
+
+
+            var plotc = $.jqplot(cont, data, {
+                //stackSeries: isStack,
                 seriesDefaults: {
                     renderer: $.jqplot.BarRenderer,
                     rendererOptions: {
                         fillToZero: true,
-                        barMargin: 30,
-                        barPadding: 2
+                        barMargin: 30
                     }
                 },
                 series: seriesLabels,
                 axesDefaults: {
                     tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                    tickOptions: {
-                        fontFamily: 'Arial',
-                        fontSize: '7pt',
-                    }
+                    tickOptions: { fontSize: '7pt' }
                 },
                 legend: {
                     show: true,
                     placement: 'outsideGrid'
                 },
 
-                axes: {
-                    xaxis: {
-                        renderer: $.jqplot.CategoryAxisRenderer,
-                        ticks: ticks,
-                        tickOptions: {
-                            angle: -45
-                        }
-                    },
-                    yaxis: {
-                        min: 0,
-                        max: 100,
-                        tickOptions: {
-                            formatString: tickString,
-                            formatter: $.jqplot.numFormatter
-                        }
-                    }
-                },
+                axes: xTickOptions,
                 highlighter: {
-                    show: true,
+                    show: hlighter,
                     tooltipContentEditor: tooltipContentEditor
                 }
             });
+
+            nEvents = 0;
+            $('#' + cont).bind('jqplotDataHighlight',
+                function (ev, seriesIndex, pointIndex, data) {
+                    nEvents = nEvents + 1;
+                    $('#info1').html(nEvents);
+                }
+            );
+
+            $('#' + cont).bind('jqplotDataUnhighlight',
+                function (ev) {
+                    $('#info1').html('Nothing');
+                    nEvents = 0;
+                }
+            );
         }
 
         function tooltipContentEditor(str, seriesIndex, pointIndex, plot) {
@@ -250,5 +344,9 @@
             return formatted
         }
 
-    </script>
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(?:\d{3})+(?!\d))/g, ",");
+        }
+
+   </script>
 </asp:Content>

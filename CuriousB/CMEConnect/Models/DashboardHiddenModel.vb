@@ -3,20 +3,11 @@ Imports System.Configuration.ConfigurationManager
 
 Public Class DashboardHiddenModel
 
-#Region "Properties"
-    Public ReadOnly Property EmailEngagements As List(Of Dictionary(Of String, Object))
-        Get
-            Return _emailEmgagements
-        End Get
-    End Property
-#End Region
-
-
     Private _dbConn As MsSQLDatabase.MsSQLClass
     Private _strConn As String
-    Private _emailEmgagements As List(Of Dictionary(Of String, Object))
 
-    Public LatestDeployed As New Dictionary(Of String, Object)
+    Public EmailEngagements As New List(Of Dictionary(Of String, Object))
+    Public LatestDeployements As New List(Of Dictionary(Of String, Object))
 
     Public HasError As Boolean = False
     Public ErrorMMsg As String = ""
@@ -29,6 +20,7 @@ Public Class DashboardHiddenModel
         _dbConn = New MsSQLDatabase.MsSQLClass()
 
         GetEmailEngagements()
+
     End Sub
 
     Private Sub GetEmailEngagements()
@@ -36,7 +28,8 @@ Public Class DashboardHiddenModel
 
         Dim _eLib = New CuriousBLib.EngagementLib
 
-        _emailEmgagements = _eLib.GetEngagementOverTime("rpt.sp_Engagement_Over_Time")
+        EmailEngagements = _eLib.GetEngagementOverTime("rpt.sp_EngagementOverTime")
+        LatestDeployements = _eLib.GetLatestDeployments
         If _eLib.HasError Then
             HasError = True
             ErrorMMsg = _eLib.ErrorMsg
@@ -45,4 +38,5 @@ Public Class DashboardHiddenModel
         _eLib.Dispose()
 
     End Sub
+
 End Class

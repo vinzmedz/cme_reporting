@@ -50,6 +50,17 @@ Public Class EngagementController
         Return View(otherssb)
     End Function
 
+    Function LatestDeployment() As ActionResult
+        Dim latestm As LatestDeploymentModel = New LatestDeploymentModel
+
+        ViewData("SideDash") = "parent"
+        ViewData("SideReports") = "parent active"
+        ViewData("IsDashCollapse") = ""
+        ViewData("IsCollapse") = " in"
+
+        Return View(latestm)
+    End Function
+
     Function EmailPreview(ByVal CommLog As String) As String
         Dim el As CuriousBLib.EngagementLib = New CuriousBLib.EngagementLib
 

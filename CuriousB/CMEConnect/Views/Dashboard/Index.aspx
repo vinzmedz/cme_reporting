@@ -11,6 +11,8 @@
 		<div class="col-lg-12">
 			<h3 class="page-header">Email Engagement Dashboard</h3>
             <p><%
+                   
+                   'Response.Write(Model.LatestDeployed("DateText"))
                    If Model.HasError Then
                        Response.Write(Model.ErrorMMsg)
                    End If%></p>
@@ -118,7 +120,7 @@
                         <p>
                             <%=Model.ChartDesc%>
                         </p>
-                        
+                        <div><span>Events: </span><span id="info1">Nothing yet</span></div>                        
 					    <div id="barChart" style="width: 100%; height: 500px;"></div>
                         <div id="chartTooltip" style="position: absolute; z-index: 99; display: none;"></div>
                         <% 
@@ -201,13 +203,17 @@
 
 </asp:Content>
 
-<asp:Content ID="indexCSS" ContentPlaceHolderID="CSSContent" runat="server">
+<asp:Content ID="indexCSSContent" ContentPlaceHolderID="CSSContent" runat="server">
     <link href="<%= Url.Content("~/Content/bootstrap.min.css") %>" rel="stylesheet">
     <link href="<%= Url.Content("~/Content/bootstrap-table.css")%>" rel="stylesheet">
     <link href="<%= Url.Content("~/Content/jquery.jqplot.min.css") %>" rel="stylesheet">
     <link href="<%= Url.Content("~/Content/styles.css") %>" rel="stylesheet">
 
-    <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<%= Url.Content("~/Scripts/excanvas.js")%>"></script><![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="<%= Url.Content("~/Scripts/html5shiv.js")%>"></script>
+        <script src="<%= Url.Content("~/Scripts/respond.min.js")%>"></script>
+    <![endif]-->
 </asp:Content>
 
 <asp:Content ID="indexBreadcrumb" ContentPlaceHolderID="BreadcrumbContent" runat="server">
@@ -239,7 +245,7 @@
 
 </asp:Content>
 
-<asp:Content ID="indexScripts" ContentPlaceHolderID="ScriptsSection" runat="server">
+<asp:Content ID="indexScriptsContent" ContentPlaceHolderID="ScriptsSection" runat="server">
 
     <script src="<%= Url.Content("~/Scripts/jquery-1.7.1.min.js")%>"></script>
     <script src="<%= Url.Content("~/Scripts/jquery-ui-1.8.20.min.js")%>"></script>
@@ -257,6 +263,24 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $.jqplot.numFormatter = function (format, val) {
+                if (!format) {
+                    format = '%.1f';
+                }
+                return numberWithCommas($.jqplot.sprintf(format, val));
+            };
+
+            var seriesL = [
+                    { label: 'Low' },
+                    { label: 'Medium' },
+                    { label: 'Hi' }
+            ];
+
+            $.jqplot.sprintf.thousandsSeparator = ',';
+
+            plotStackedBarChart('barChart', [s1, s2, s3], chartTicks, seriesL, '%d\%', [m1, m2, m3]);
+
+
             $('#emailPreviewModal').modal('hide');
 
             $('#viewEmail').click(function () {
@@ -288,25 +312,10 @@
 
             });
 
-            $.jqplot.sprintf.thousandsSeparator = ',';
-
-            var seriesL = [
-                    { label: 'Low' },
-                    { label: 'Medium' },
-                    { label: 'Hi' }
-            ];
-
-            var data = [s1, s2, s3];
-            var mdat = [m1, m2, m3];
-            plotStackedBarChart('barChart', data, chartTicks, seriesL, '%d\%', mdat);
-
-
         });
 
         $(window).on('resize', function () {
-            $('#areaChart').html('');
             $('#barChart').html('');
-            $('#barClicks').html('');
 
             var seriesL = [
                     { label: 'Low' },
@@ -314,16 +323,13 @@
                     { label: 'Hi' }
             ];
 
-            var data = [s1, s2, s3];
-            var mdat = [m1, m2, m3];
-            plotStackedBarChart('barChart', data, chartTicks, seriesL, '%d\%', mdat);
-
+            plotStackedBarChart('barChart', [s1, s2, s3], chartTicks, seriesL, '%d\%', [m1, m2, m3]);
 
             if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
             if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
         })
 
-        function plotStackedBarChart(cont, data, ticks, seriesLabels, tickString, mdat) {
+        function plotStackedBarChart(cont, data, chartTicks, seriesLabels, tickString, mdat) {
 
             var mdata = mdat;
             var plotc = $.jqplot(cont, data, {
@@ -332,27 +338,22 @@
                     renderer: $.jqplot.BarRenderer,
                     rendererOptions: {
                         fillToZero: true,
-                        barMargin: 30,
-                        barPadding: 2
+                        barMargin: 30
                     }
                 },
                 series: seriesLabels,
                 axesDefaults: {
                     tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                    tickOptions: {
-                        fontFamily: 'Arial',
-                        fontSize: '7pt',
-                    }
+                    tickOptions: { fontSize: '7pt' }
                 },
                 legend: {
                     show: true,
                     placement: 'outsideGrid'
                 },
-
                 axes: {
                     xaxis: {
                         renderer: $.jqplot.CategoryAxisRenderer,
-                        ticks: ticks,
+                        ticks: chartTicks,
                         tickOptions: {
                             angle: -45
                         }
@@ -361,92 +362,83 @@
                         min: 0,
                         max: 100,
                         tickOptions: {
-                            formatString: tickString,
+                            formatString: '%d\%',
                             formatter: $.jqplot.numFormatter
                         }
                     }
                 }
-                //highlighter: {
+                //,highlighter: {
                 //    show: true,
                 //    tooltipContentEditor: tooltipContentEditor
                 //}
-
-
-
             });
 
-            var color = 'rgb(50%,50%,100%)';
-            var spanStart = '<span style="font-size:14px;font-weight:bold;color:' + color + ';">';
-            $('#' + cont).bind('jqplotDataHighlight', function (ev, seriesIndex, pointIndex, data) {
-                var chart_left = $('.jqplot-event-canvas').offset().left;
-                var chart_top = $('.jqplot-event-canvas').offset().top;
-                var x = ev.pageX;
-                var y = ev.pageY;
-                var left = -60;
-                var top = 35;
-                //var chartTooltipHTML = spanStart;
-                if (plotc.axes.xaxis.u2p) {
-                    left = left + plotc.axes.xaxis.u2p(data[0]); // convert x axis units to pixels on grid
-                }
+            $('#' + cont).bind('jqplotDataHighlight',
+                function (ev, seriesIndex, pointIndex, data) {
+                    var chart_left = $('.jqplot-event-canvas').offset().left;
+                    var chart_top = $('.jqplot-event-canvas').offset().top;
+                    var x = ev.pageX;
+                    var y = ev.pageY;
+                    var left = -60;
+                    var top = 35;
 
-                if (plotc.series[0].barDirection === "vertical") left -= plotc.series[0].barWidth / 2;
-                else if (plotc.series[0].barDirection === "horizontal") top -= plotc.series[0].barWidth / 2;
-                //for stacked chart
-                var sum = 0;
-                for (var i = 0; i < seriesIndex + 1; i++)
-                    sum += plotc.series[i].data[pointIndex][1];
+                    //console.log("chart_left = " + chart_left);
+                    if (plotc.axes.xaxis.u2p) {
+                        left = left + plotc.axes.xaxis.u2p(data[0]); // convert x axis units to pixels on grid
+                    }
 
-                top += plotc.axes.yaxis.u2p(sum); //(data[1]);
-                var seriesName = plotc.series[seriesIndex].label;
+                    if (plotc.series[0].barDirection === "vertical") left -= plotc.series[0].barWidth / 2;
+                    else if (plotc.series[0].barDirection === "horizontal") top -= plotc.series[0].barWidth / 2;
+                    //for stacked chart
+                    var sum = 0;
+                    for (var i = 0; i < seriesIndex + 1; i++)
+                        sum += plotc.series[i].data[pointIndex][1];
 
-                var chartTooltipHTML =
-                                '<table class="jqplot-highlighter">' +
-                                '   <tr><td class="jqplot-highlighter-title" colspan=2>' + plotc.options.axes.xaxis.ticks[pointIndex] + '</td></tr>' +
-                                '   <tr class="jqplot-highlighter-body"><td>' + plotc.series[seriesIndex]["label"] + '</td><td>' + data[1] + '</td></tr>' +
-                                '   <tr class="jqplot-highlighter-body"><td>People:</td><td>' + mdata[seriesIndex][pointIndex] + '</td></tr>' +
-                                '</table>'
+                    top += plotc.axes.yaxis.u2p(sum); //(data[1]);
+                    var seriesName = plotc.series[seriesIndex].label;
 
-                var ct = $('#chartTooltip');
-                ct.css({
-                    left: left,
-                    top: top
-                }).html(chartTooltipHTML).show();
+                    var chartTooltipHTML =
+                                    '<table class="jqplot-highlighter">' +
+                                    '   <tr><td class="jqplot-highlighter-title" colspan=2>' + plotc.options.axes.xaxis.ticks[pointIndex] + '</td></tr>' +
+                                    '   <tr class="jqplot-highlighter-body"><td>' + plotc.series[seriesIndex]["label"] + '</td><td>' + data[1] + '%</td></tr>' +
+                                    '   <tr class="jqplot-highlighter-body"><td>People:</td><td>' + numberWithCommas(mdata[seriesIndex][pointIndex]) + '</td></tr>' +
+                                    '</table>'
 
-                if (plotc.series[0].barDirection === "vertical") {
-                    var totalH = ct.height();
+                    var ct = $('#chartTooltip');
                     ct.css({
-                        top: top - totalH
-                    });
-                    console.log('Top vertical: ' + top);
-                }
-            });
+                        left: left,
+                        top: top
+                    }).html(chartTooltipHTML).show();
 
-            $('#' + cont).bind('jqplotDataUnhighlight', function (ev, seriesIndex, pointIndex, data) {
-                $('#chartTooltip').empty().hide();
-            });
+                    if (plotc.series[0].barDirection === "vertical") {
+                        var totalH = ct.height();
+                        ct.css({
+                            top: top - totalH
+                        });
+                        //console.log('Top vertical: ' + top);
+                    }
+                }
+            );
+
+            $('#' + cont).bind('jqplotDataUnhighlight',
+                function (ev) {
+                    $('#chartTooltip').empty().hide();
+                }
+            );
         }
 
         function tooltipContentEditor(str, seriesIndex, pointIndex, plot) {
             // display series_label, x-axis_tick, y-axis value
             var formatted = '<table class="jqplot-highlighter">' +
-                            '   <tr><td class="jqplot-highlighter-title" colspan=2>' + plot.options.axes.xaxis.ticks[pointIndex] + '<>' + test + '</td></tr>' +
-                                '<tr class="jqplot-highlighter-body"><td>' + plot.series[seriesIndex]["label"] + '</td><td>' + plot.data[seriesIndex][pointIndex] + '</td></tr>' +
+                            '   <tr><td class="jqplot-highlighter-title" colspan=2>' + plot.options.axes.xaxis.ticks[pointIndex] + '</td></tr>' +
+                                '<tr class="jqplot-highlighter-body"><td>' + plot.series[seriesIndex]["label"] + '</td><td>' + numberWithCommas(plot.data[seriesIndex][pointIndex]) + '</td></tr>' +
                             '</table>'
             return formatted
         }
 
-        (function ($) {
-            $.jqplot.numFormatter = function (format, val) {
-                if (!format) {
-                    format = '%.1f';
-                }
-                return numberWithCommas($.jqplot.sprintf(format, val));
-            };
-
-            function numberWithCommas(x) {
-                return x.toString().replace(/\B(?=(?:\d{3})+(?!\d))/g, ",");
-            }
-        })(jQuery);
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(?:\d{3})+(?!\d))/g, ",");
+        }
 
         function vinzSorter(a, b) {
             a = +a.replace(",", ""); // remove ,
@@ -471,5 +463,6 @@
             else
                 return value;
         }
+
   </script>
 </asp:Content>

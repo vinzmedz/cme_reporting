@@ -6,7 +6,6 @@ Public Class DashboardModel
     Private _dbConn As MsSQLDatabase.MsSQLClass
     Private _strConn As String
 
-    Public LatestDeployements As New List(Of Dictionary(Of String, Object))
     Public LatestDeployed As New Dictionary(Of String, Object)
     Public EmailEngagements As New List(Of Dictionary(Of String, Object))
     Public ChartDesc As String = ""
@@ -38,9 +37,6 @@ Public Class DashboardModel
         End If
 
         _eLib.Dispose()
-
-        Dim _ldep = New LatestDeploymentModel
-        LatestDeployements = _ldep.LatestDeployements
     End Sub
 
     'Public Sub GetEmailEngagements()

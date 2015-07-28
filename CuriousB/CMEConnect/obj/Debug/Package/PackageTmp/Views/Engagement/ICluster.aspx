@@ -31,9 +31,6 @@
 						            <th data-field="Cluster_4" data-align="center">Cluster 4</th>
 						            <th data-field="Cluster_5" data-align="center">Cluster 5</th>
 						            <th data-field="Cluster_6" data-align="center">Cluster 6</th>
-						            <th data-field="Cluster_7" data-align="center">Cluster 7</th>
-						            <th data-field="Cluster_8" data-align="center">Cluster 8</th>
-						            <th data-field="Cluster_9" data-align="center">Cluster 9</th>
 						        </tr>
 						    </thead>
                             <tbody>

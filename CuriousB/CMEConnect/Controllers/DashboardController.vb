@@ -19,7 +19,6 @@ Public Class DashboardController
 
     Function Hidden() As ActionResult
         Dim dashb As DashboardHiddenModel = New DashboardHiddenModel
-        Dim latest As LatestDeploymentModel = New LatestDeploymentModel
 
         ViewData("loggedIn") = False
         ViewData("SideDash") = "parent active"

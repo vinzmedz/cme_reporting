@@ -23,78 +23,22 @@ Public Class LatestDeploymentModel
     Public DebugMsg As String = ""
 
     Public Sub New()
-        _strConn = ConnectionStrings("SQLConn2").ConnectionString
-        _dbConn = New MsSQLDatabase.MsSQLClass()
 
         InitVariables()
-        With _dbConn
-            .dbOpen(_strConn)
-
-            GetLatestDeployments()
-        End With
-        _dbConn.dbClose()
-        _dbConn = Nothing
 
     End Sub
 
     Private Sub InitVariables()
         Dim _eLib = New CuriousBLib.EngagementLib
 
-        _eLib.GetLatestCommunication()
+        LatestDeployements = _eLib.GetLatestDeployments
+        If _eLib.HasError Then
+            HasError = True
+            ErrorMMsg = _eLib.ErrorMsg
+        End If
 
-        DeployDate = _deployDate.ToString("g")
-    End Sub
-
-    Public Sub GetLatestDeployments()
-        Dim mSQL As String = "[rpt].[sp_LatestDeployment]"
-
-        DebugMsg = DebugMsg & mSQL
-        With _dbConn
-            If .IsConnected Then
-                .Query = mSQL
-                .SQLType = MsSQLDatabase.MsSQLClass.QueryType.STORED_QUERY
-                .MyCmd.CommandType = CommandType.StoredProcedure
-
-                If .ExecuteQuery Then
-                    With .MyRdr
-                        If .HasRows Then
-                            Dim LatestDeploymentsList As New List(Of Dictionary(Of String, Object))
-                            Dim _Result = New ArrayList
-                            '--Name, DateDeployed, Deployed, Opened, Clicked, Total
-                            'Name	DateDeployed	deployed	opened	clicked	Rank	expectedOpenRate
-                            While .Read
-                                Dim dict As New Dictionary(Of String, Object)
-                                Dim dep As Integer = .GetValue(2)
-                                Dim opn As Integer = .GetValue(3)
-                                Dim clk As Integer = .GetValue(4)
-
-
-
-                                dict.Add("DateDeployed", .GetValue(1))
-                                dict.Add("Name", .GetValue(0).ToString)
-                                dict.Add("Deployed", dep)
-                                dict.Add("Opened", opn)
-                                dict.Add("Clicked", clk)
-                                dict.Add("Rank", .GetValue(5))
-                                dict.Add("ExpOpen", .GetValue(6))
-                                LatestDeploymentsList.Add(dict)
-                            End While
-                            LatestDeployements = LatestDeploymentsList
-
-                        End If
-                        .Close()
-                    End With
-                End If
-
-                '.dbClose()
-            Else
-                HasError = True
-                ErrorMMsg = .ErrorMsg
-            End If
-
-        End With
+        _eLib.Dispose()
 
     End Sub
-
 
 End Class

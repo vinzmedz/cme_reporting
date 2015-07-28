@@ -75,7 +75,6 @@
 
 <asp:Content ID="ContentCSS" ContentPlaceHolderID="CSSContent" runat="server">
     <link href="<%= Url.Content("~/Content/bootstrap.min.css") %>" rel="stylesheet">
-    <link href="<%= Url.Content("~/Content/datepicker3.css") %>" rel="stylesheet">
     <link href="<%= Url.Content("~/Content/bootstrap-table.css")%>" rel="stylesheet">
     <link href="<%= Url.Content("~/Content/jquery.jqplot.min.css") %>" rel="stylesheet">
     <link href="<%= Url.Content("~/Content/styles.css") %>" rel="stylesheet">
@@ -165,7 +164,6 @@
                         barMargin : 30
                     }
                 },
-
                 series: seriesLabels,
                 axesDefaults: {
                     tickRenderer: $.jqplot.CanvasAxisTickRenderer,
