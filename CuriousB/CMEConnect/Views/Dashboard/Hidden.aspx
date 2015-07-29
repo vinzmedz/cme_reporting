@@ -88,7 +88,6 @@
                         <p>
                             The calculation behind this is quite complicated but the result is a measure of not just how many people are on the database, but how engaged each of them is.
                         </p>
-                        <div><span>Events: </span><span id="info1">Nothing yet</span></div>
 					    <div id="barChart" style="width: 100%; height: 300px;"></div>
                         <%
                             Dim dataLow As String = ""
@@ -291,10 +290,8 @@
         })
 
         function plotStackedBarChart(cont, data, seriesLabels, isStack, xTickOptions, hlighter) {
-
-
             var plotc = $.jqplot(cont, data, {
-                //stackSeries: isStack,
+                stackSeries: isStack,
                 seriesDefaults: {
                     renderer: $.jqplot.BarRenderer,
                     rendererOptions: {
@@ -319,24 +316,22 @@
                 }
             });
 
-            nEvents = 0;
-            $('#' + cont).bind('jqplotDataHighlight',
-                function (ev, seriesIndex, pointIndex, data) {
-                    nEvents = nEvents + 1;
-                    $('#info1').html(nEvents);
-                }
-            );
+            //$('#' + cont).bind('jqplotDataHighlight',
+            //    function (ev, seriesIndex, pointIndex, data) {
+            //        nEvents = nEvents + 1;
+            //        $('#info1').html(nEvents);
+            //    }
+            //);
 
-            $('#' + cont).bind('jqplotDataUnhighlight',
-                function (ev) {
-                    $('#info1').html('Nothing');
-                    nEvents = 0;
-                }
-            );
+            //$('#' + cont).bind('jqplotDataUnhighlight',
+            //    function (ev) {
+            //        $('#info1').html('Nothing');
+            //        nEvents = 0;
+            //    }
+            //);
         }
 
         function tooltipContentEditor(str, seriesIndex, pointIndex, plot) {
-            // display series_label, x-axis_tick, y-axis value
             var formatted = '<table class="jqplot-highlighter">' +
                             '   <tr><td class="jqplot-highlighter-title" colspan=2>' + plot.options.axes.xaxis.ticks[pointIndex] + '</td></tr>' +
                                 '<tr class="jqplot-highlighter-body"><td>' + plot.series[seriesIndex]["label"] + '</td><td>' + plot.data[seriesIndex][pointIndex] + '</td></tr>' +

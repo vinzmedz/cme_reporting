@@ -1,0 +1,16 @@
+D:\Projects\VipBackpackers 4.0\VipBackpackers\MsSQLDatabase\bin\Debug\MsSQLDatabase.dll
+D:\Projects\VipBackpackers 4.0\VipBackpackers\MsSQLDatabase\bin\Debug\MsSQLDatabase.pdb
+D:\Projects\VipBackpackers 4.0\VipBackpackers\MsSQLDatabase\bin\Debug\MsSQLDatabase.xml
+D:\Projects\VipBackpackers 4.0\VipBackpackers\MsSQLDatabase\obj\Debug\MsSQLDatabase.Resources.resources
+D:\Projects\VipBackpackers 4.0\VipBackpackers\MsSQLDatabase\obj\Debug\MsSQLDatabase.vbproj.GenerateResource.Cache
+D:\Projects\VipBackpackers 4.0\VipBackpackers\MsSQLDatabase\obj\Debug\MsSQLDatabase.dll
+D:\Projects\VipBackpackers 4.0\VipBackpackers\MsSQLDatabase\obj\Debug\MsSQLDatabase.xml
+D:\Projects\VipBackpackers 4.0\VipBackpackers\MsSQLDatabase\obj\Debug\MsSQLDatabase.pdb
+D:\Projects\MsSQLDatabase\bin\Debug\MsSQLDatabase.dll
+D:\Projects\MsSQLDatabase\bin\Debug\MsSQLDatabase.pdb
+D:\Projects\MsSQLDatabase\bin\Debug\MsSQLDatabase.xml
+D:\Projects\MsSQLDatabase\obj\Debug\MsSQLDatabase.Resources.resources
+D:\Projects\MsSQLDatabase\obj\Debug\MsSQLDatabase.vbproj.GenerateResource.Cache
+D:\Projects\MsSQLDatabase\obj\Debug\MsSQLDatabase.dll
+D:\Projects\MsSQLDatabase\obj\Debug\MsSQLDatabase.xml
+D:\Projects\MsSQLDatabase\obj\Debug\MsSQLDatabase.pdb

@@ -11,28 +11,28 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/CMEConnect.dll">
-      <publishTime>07/29/2015 05:30:37</publishTime>
+      <publishTime>07/29/2015 07:46:58</publishTime>
     </File>
     <File Include="bin/CMEConnect.pdb">
-      <publishTime>07/29/2015 05:30:37</publishTime>
+      <publishTime>07/29/2015 07:46:58</publishTime>
     </File>
     <File Include="bin/CMEConnect.xml">
-      <publishTime>07/29/2015 05:30:37</publishTime>
+      <publishTime>07/29/2015 07:46:58</publishTime>
     </File>
     <File Include="bin/CuriousBLib.dll">
-      <publishTime>07/28/2015 23:31:02</publishTime>
+      <publishTime>07/29/2015 07:46:57</publishTime>
     </File>
     <File Include="bin/CuriousBLib.pdb">
-      <publishTime>07/28/2015 23:31:02</publishTime>
+      <publishTime>07/29/2015 07:46:57</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>07/19/2015 07:57:47</publishTime>
     </File>
     <File Include="bin/MsSQLDatabase.dll">
-      <publishTime>07/28/2015 18:59:04</publishTime>
+      <publishTime>07/29/2015 07:46:57</publishTime>
     </File>
     <File Include="bin/MsSQLDatabase.pdb">
-      <publishTime>07/28/2015 18:59:04</publishTime>
+      <publishTime>07/29/2015 07:46:57</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>07/19/2015 07:57:46</publishTime>
@@ -155,7 +155,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/21/2015 21:26:56</publishTime>
     </File>
     <File Include="Views/Dashboard/Hidden.aspx">
-      <publishTime>07/29/2015 05:37:07</publishTime>
+      <publishTime>07/29/2015 07:47:40</publishTime>
     </File>
     <File Include="Views/Dashboard/Index.aspx">
       <publishTime>07/29/2015 06:15:20</publishTime>
@@ -188,7 +188,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/19/2015 07:57:44</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>07/29/2015 06:19:02</publishTime>
+      <publishTime>07/29/2015 07:47:47</publishTime>
     </File>
   </ItemGroup>
 </Project>

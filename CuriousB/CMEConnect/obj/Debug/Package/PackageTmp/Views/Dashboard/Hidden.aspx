@@ -291,10 +291,8 @@
         })
 
         function plotStackedBarChart(cont, data, seriesLabels, isStack, xTickOptions, hlighter) {
-
-
             var plotc = $.jqplot(cont, data, {
-                //stackSeries: isStack,
+                stackSeries: isStack,
                 seriesDefaults: {
                     renderer: $.jqplot.BarRenderer,
                     rendererOptions: {
